@@ -1,5 +1,6 @@
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_bloc/jaspr_bloc.dart';
+import 'package:jaspr_provider/jaspr_provider.dart';
 
 /// {@template bloc_consumer}
 /// [BlocConsumer] exposes a [builder] and [listener] in order react to new
@@ -63,7 +64,7 @@ class BlocConsumer<B extends StateStreamable<S>, S> extends StatefulComponent {
   const BlocConsumer({
     required this.builder,
     required this.listener,
-    required this.bloc,
+    this.bloc,
     this.buildWhen,
     this.listenWhen,
     Key? key,
@@ -72,7 +73,7 @@ class BlocConsumer<B extends StateStreamable<S>, S> extends StatefulComponent {
   /// The [bloc] that the [BlocConsumer] will interact with.
   /// If omitted, [BlocConsumer] will automatically perform a lookup using
   /// `BlocProvider` and the current `BuildContext`.
-  final B bloc;
+  final B? bloc;
 
   /// The [builder] function which will be invoked on each widget build.
   /// The [builder] takes the `BuildContext` and current `state` and
@@ -105,21 +106,21 @@ class _BlocConsumerState<B extends StateStreamable<S>, S>
   @override
   void initState() {
     super.initState();
-    _bloc = component.bloc;
+    _bloc = component.bloc ?? context.read<B>();
   }
 
   @override
   void didUpdateComponent(BlocConsumer<B, S> oldComponent) {
     super.didUpdateComponent(oldComponent);
-    final oldBloc = oldComponent.bloc;
-    final currentBloc = component.bloc;
+    final oldBloc = oldComponent.bloc ?? context.read<B>();
+    final currentBloc = component.bloc ?? oldBloc;
     if (oldBloc != currentBloc) _bloc = currentBloc;
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final bloc = component.bloc;
+    final bloc = component.bloc ?? context.read<B>();
     if (_bloc != bloc) _bloc = bloc;
   }
 

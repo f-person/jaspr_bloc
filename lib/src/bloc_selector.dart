@@ -1,5 +1,6 @@
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_bloc/jaspr_bloc.dart';
+import 'package:jaspr_provider/jaspr_provider.dart';
 
 /// Signature for the `selector` function which
 /// is responsible for returning a selected value, [T], based on [state].
@@ -31,11 +32,11 @@ class BlocSelector<B extends StateStreamable<S>, S, T>
     Key? key,
     required this.selector,
     required this.builder,
-    required this.bloc,
+    this.bloc,
   }) : super(key: key);
 
   /// The [bloc] that the [BlocSelector] will interact with.
-  final B bloc;
+  final B? bloc;
 
   /// The [builder] function which will be invoked
   /// when the selected state changes.
@@ -61,15 +62,15 @@ class _BlocSelectorState<B extends StateStreamable<S>, S, T>
   @override
   void initState() {
     super.initState();
-    _bloc = component.bloc;
+    _bloc = component.bloc ?? context.read<B>();
     _state = component.selector(_bloc.state);
   }
 
   @override
   void didUpdateComponent(BlocSelector<B, S, T> oldComponent) {
     super.didUpdateComponent(oldComponent);
-    final oldBloc = oldComponent.bloc;
-    final currentBloc = component.bloc;
+    final oldBloc = oldComponent.bloc ?? context.read<B>();
+    final currentBloc = component.bloc ?? oldBloc;
     if (oldBloc != currentBloc) {
       _bloc = currentBloc;
       _state = component.selector(_bloc.state);
@@ -79,7 +80,7 @@ class _BlocSelectorState<B extends StateStreamable<S>, S, T>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final bloc = component.bloc;
+    final bloc = component.bloc ?? context.read<B>();
     if (_bloc != bloc) {
       _bloc = bloc;
       _state = component.selector(_bloc.state);

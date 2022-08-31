@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_bloc/jaspr_bloc.dart';
+import 'package:jaspr_provider/jaspr_provider.dart';
 
 /// Signature for the `listener` function which takes the `BuildContext` along
 /// with the `state` and is responsible for executing in response to
@@ -73,13 +74,15 @@ class BlocListener<B extends StateStreamable<S>, S>
   const BlocListener({
     Key? key,
     required BlocComponentListener<S> listener,
-    required B bloc,
+    B? bloc,
     BlocListenerCondition<S>? listenWhen,
+    Component? child,
   }) : super(
           key: key,
           listener: listener,
           bloc: bloc,
           listenWhen: listenWhen,
+          child: child,
         );
 }
 
@@ -96,13 +99,14 @@ abstract class BlocListenerBase<B extends StateStreamable<S>, S>
   const BlocListenerBase({
     Key? key,
     required this.listener,
-    required this.bloc,
+    this.bloc,
     this.listenWhen,
+    this.child,
   }) : super(key: key);
 
   /// The [bloc] whose `state` will be listened to.
   /// Whenever the [bloc]'s `state` changes, [listener] will be invoked.
-  final B bloc;
+  final B? bloc;
 
   /// The [BlocComponentListener] which will be called on every `state` change.
   /// This [listener] should be used for any code which needs to execute
@@ -111,6 +115,8 @@ abstract class BlocListenerBase<B extends StateStreamable<S>, S>
 
   /// {@macro bloc_listener_listen_when}
   final BlocListenerCondition<S>? listenWhen;
+
+  final Component? child;
 
   @override
   State<BlocListenerBase<B, S>> createState() => _BlocListenerBaseState<B, S>();
@@ -125,7 +131,7 @@ class _BlocListenerBaseState<B extends StateStreamable<S>, S>
   @override
   void initState() {
     super.initState();
-    _bloc = component.bloc;
+    _bloc = component.bloc ?? context.read<B>();
     _previousState = _bloc.state;
     _subscribe();
   }
@@ -133,8 +139,8 @@ class _BlocListenerBaseState<B extends StateStreamable<S>, S>
   @override
   void didUpdateComponent(BlocListenerBase<B, S> oldComponent) {
     super.didUpdateComponent(oldComponent);
-    final oldBloc = oldComponent.bloc;
-    final currentBloc = component.bloc;
+    final oldBloc = oldComponent.bloc ?? context.read<B>();
+    final currentBloc = component.bloc ?? oldBloc;
     if (oldBloc != currentBloc) {
       if (_subscription != null) {
         _unsubscribe();
@@ -148,7 +154,7 @@ class _BlocListenerBaseState<B extends StateStreamable<S>, S>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final bloc = component.bloc;
+    final bloc = component.bloc ?? context.read<B>();
     if (_bloc != bloc) {
       if (_subscription != null) {
         _unsubscribe();
@@ -161,7 +167,13 @@ class _BlocListenerBaseState<B extends StateStreamable<S>, S>
 
   @override
   Iterable<Component> build(BuildContext context) sync* {
-    /// [build] is empty because BlocListener never build any components
+    if (component.bloc == null) {
+      context.select<B, bool>((bloc) => identical(_bloc, bloc));
+    }
+    final child = component.child;
+    if (child != null) {
+      yield child;
+    }
   }
 
   @override

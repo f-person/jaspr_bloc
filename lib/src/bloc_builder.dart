@@ -1,5 +1,6 @@
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_bloc/jaspr_bloc.dart';
+import 'package:jaspr_provider/jaspr_provider.dart';
 
 /// Signature for the `builder` function which takes the `BuildContext` and
 /// [state] and is responsible for returning components
@@ -77,7 +78,7 @@ class BlocBuilder<B extends StateStreamable<S>, S>
   const BlocBuilder({
     Key? key,
     required this.builder,
-    required B bloc,
+    B? bloc,
     BlocBuilderCondition<S>? buildWhen,
   }) : super(key: key, bloc: bloc, buildWhen: buildWhen);
 
@@ -104,13 +105,13 @@ abstract class BlocBuilderBase<B extends StateStreamable<S>, S>
     extends StatefulComponent {
   /// {@macro bloc_builder_base}
   const BlocBuilderBase({
-    required this.bloc,
+    this.bloc,
     this.buildWhen,
     Key? key,
   }) : super(key: key);
 
   /// The [bloc] that the [BlocBuilderBase] will interact with.
-  final B bloc;
+  final B? bloc;
 
   /// {@macro bloc_builder_build_when}
   final BlocBuilderCondition<S>? buildWhen;
@@ -130,15 +131,15 @@ class _BlocBuilderBaseState<B extends StateStreamable<S>, S>
   @override
   void initState() {
     super.initState();
-    _bloc = component.bloc;
+    _bloc = component.bloc ?? context.read<B>();
     _state = _bloc.state;
   }
 
   @override
   void didUpdateComponent(BlocBuilderBase<B, S> oldComponent) {
     super.didUpdateComponent(oldComponent);
-    final oldBloc = oldComponent.bloc;
-    final currentBloc = component.bloc;
+    final oldBloc = oldComponent.bloc ?? context.read<B>();
+    final currentBloc = component.bloc ?? oldBloc;
     if (oldBloc != currentBloc) {
       _bloc = currentBloc;
       _state = _bloc.state;
@@ -148,7 +149,7 @@ class _BlocBuilderBaseState<B extends StateStreamable<S>, S>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final bloc = component.bloc;
+    final bloc = component.bloc ?? context.read<B>();
     if (_bloc != bloc) {
       _bloc = bloc;
       _state = _bloc.state;
@@ -164,12 +165,5 @@ class _BlocBuilderBaseState<B extends StateStreamable<S>, S>
     );
 
     yield* component.build(context, _state);
-
-    // final buildResult = component.build(context, _state);
-    // for (final comp in buildResult) {
-    //   yield Text('hi');
-    //   print('waskldjaskldj');
-    //   print(comp);
-    // }
   }
 }
