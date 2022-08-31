@@ -161,7 +161,16 @@ packages:
       name: jaspr
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.2"
+    version: "0.1.5"
+  jaspr_provider:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: c6ea7c051177a385568b62657f0a82883c5528ad
+      url: "https://github.com/Maksimka101/jaspr_provider.git"
+    source: git
+    version: "0.0.2"
   jaspr_test:
     dependency: "direct dev"
     description:
