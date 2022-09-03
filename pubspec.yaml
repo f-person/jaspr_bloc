@@ -12,9 +12,7 @@ environment:
 dependencies:
   bloc: ^8.0.2
   jaspr: ^0.1.5
-  jaspr_provider: 
-    git:
-      url: https://github.com/Maksimka101/jaspr_provider.git
+  jaspr_provider: ^0.0.3
 
 dev_dependencies:
   jaspr_test: ^0.1.0
