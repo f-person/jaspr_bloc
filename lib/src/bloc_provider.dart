@@ -10,8 +10,9 @@ mixin BlocProviderSingleChildComponent on SingleChildComponent {}
 /// Takes a [Create] function that is responsible for
 /// creating the [Bloc] or [Cubit] and a [child] which will have access
 /// to the instance via `BlocProvider.of(context)`.
-/// It is used as a dependency injection (DI) widget so that a single instance
-/// of a [Bloc] or [Cubit] can be provided to multiple widgets within a subtree.
+/// It is used as a dependency injection (DI) component so that a single
+/// instance of a [Bloc] or [Cubit] can be provided to multiple components
+/// within a subtree.
 ///
 /// ```dart
 /// BlocProvider(
@@ -72,7 +73,7 @@ class BlocProvider<T extends StateStreamableSource<Object?>>
         lazy = true,
         super(key: key, child: child);
 
-  /// Widget which will have access to the [Bloc] or [Cubit].
+  /// Component which will have access to the [Bloc] or [Cubit].
   final Component? child;
 
   /// Whether the [Bloc] or [Cubit] should be created lazily.
@@ -83,11 +84,11 @@ class BlocProvider<T extends StateStreamableSource<Object?>>
 
   final T? _value;
 
-  /// Method that allows widgets to access a [Bloc] or [Cubit] instance
+  /// Method that allows components to access a [Bloc] or [Cubit] instance
   /// as long as their `BuildContext` contains a [BlocProvider] instance.
   ///
   /// If we want to access an instance of `BlocA` which was provided higher up
-  /// in the widget tree we can do so via:
+  /// in the component tree we can do so via:
   ///
   /// ```dart
   /// BlocProvider.of<BlocA>(context);
@@ -104,7 +105,7 @@ class BlocProvider<T extends StateStreamableSource<Object?>>
         '''
         BlocProvider.of() called with a context that does not contain a $T.
         No ancestor could be found starting from the context that was passed to BlocProvider.of<$T>().
-        This can happen if the context you used comes from a widget above the BlocProvider.
+        This can happen if the context you used comes from a component above the BlocProvider.
         The context used was: $context
         ''',
       );

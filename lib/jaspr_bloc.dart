@@ -5,6 +5,8 @@
 library jaspr_bloc;
 
 export 'package:bloc/bloc.dart';
+export 'package:jaspr_provider/jaspr_provider.dart'
+    show ProviderNotFoundException, ReadContext, SelectContext, WatchContext;
 
 export './src/bloc_builder.dart';
 export './src/bloc_consumer.dart';

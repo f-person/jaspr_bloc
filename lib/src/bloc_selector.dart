@@ -1,6 +1,5 @@
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_bloc/jaspr_bloc.dart';
-import 'package:jaspr_provider/jaspr_provider.dart';
 
 /// Signature for the `selector` function which
 /// is responsible for returning a selected value, [T], based on [state].

@@ -3,7 +3,7 @@ import 'package:jaspr_bloc/src/bloc_provider.dart';
 import 'package:jaspr_provider/jaspr_provider.dart';
 
 /// {@template multi_bloc_provider}
-/// Merges multiple [BlocProvider] widgets into one widget tree.
+/// Merges multiple [BlocProvider] components into one component tree.
 ///
 /// [MultiBlocProvider] improves the readability and eliminates the need
 /// to nest multiple [BlocProvider]s.
@@ -43,7 +43,7 @@ import 'package:jaspr_provider/jaspr_provider.dart';
 /// ```
 ///
 /// [MultiBlocProvider] converts the [BlocProvider] list into a tree of nested
-/// [BlocProvider] widgets.
+/// [BlocProvider] components.
 /// As a result, the only advantage of using [MultiBlocProvider] is improved
 /// readability due to the reduction in nesting and boilerplate.
 /// {@endtemplate}

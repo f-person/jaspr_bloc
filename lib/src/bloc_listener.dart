@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_bloc/jaspr_bloc.dart';
-import 'package:jaspr_provider/jaspr_provider.dart';
 
 /// Signature for the `listener` function which takes the `BuildContext` along
 /// with the `state` and is responsible for executing in response to
@@ -87,7 +86,8 @@ class BlocListener<B extends StateStreamable<S>, S>
 }
 
 /// {@template bloc_listener_base}
-/// Base class for widgets that listen to state changes in a specified [bloc].
+/// Base class for components that listen to state changes
+/// in a specified [bloc].
 ///
 /// A [BlocListenerBase] is stateful and maintains the state subscription.
 /// The type of the state and what happens with each state change
@@ -116,6 +116,7 @@ abstract class BlocListenerBase<B extends StateStreamable<S>, S>
   /// {@macro bloc_listener_listen_when}
   final BlocListenerCondition<S>? listenWhen;
 
+  /// Component which will have access to the [Bloc] or [Cubit].
   final Component? child;
 
   @override
